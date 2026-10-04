@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My Job Hub</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f7fb;--card:#fff;--text:#1b1f2a;--muted:#5d6577;--accent:#1f5eff;--line:#e2e5ee;--warn:#b45309}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#12141b;--card:#1b1e28;--text:#eceef4;--muted:#9aa1b4;--accent:#6b97ff;--line:#2b3040;--warn:#fbbf24}}
+:root[data-theme="dark"]{--bg:#12141b;--card:#1b1e28;--text:#eceef4;--muted:#9aa1b4;--accent:#6b97ff;--line:#2b3040;--warn:#fbbf24}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.5}
+main{max-width:760px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.5rem;margin:8px 0 4px}h2{font-size:1.05rem;margin:0 0 8px}
+p{margin:0 0 8px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:14px}
+a.btn{display:block;text-align:center;text-decoration:none;background:var(--accent);color:#fff;padding:13px;border-radius:12px;font-weight:600;margin-top:8px}
+a.btn.alt{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.job{border-top:1px solid var(--line);padding:10px 0}
+.job:first-of-type{border-top:0}
+.job b{display:block}
+.tag{display:inline-block;font-size:.78rem;border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin-right:4px;color:var(--muted)}
+.days{color:var(--warn);font-weight:600}
+a{color:var(--accent)}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.88rem}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+input{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit}
+.small{font-size:.85rem}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.rbtn{flex:none;background:var(--accent);color:#fff;border:0;border-radius:10px;padding:9px 14px;font:inherit;font-weight:600;cursor:pointer}
+.panel{display:none;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px}
+.panel.on{display:block}
+.open{color:#15803d;font-weight:600}.closed{color:var(--muted)}
+.tbtn{background:transparent;color:var(--accent);border:1.5px solid var(--accent);border-radius:10px;padding:8px 12px;font:inherit;font-weight:600;cursor:pointer;margin-top:8px}
+</style></head><body><main>
+<div class="top"><h1>My Job Hub</h1><button class="rbtn" id="rbtn" type="button">&#8635; Refresh</button></div>
+<div class="panel" id="rpanel"><b>Employment News data updated: <span id="enUpd">4 Oct 2026</span></b>
+<p class="small" style="margin-top:6px">Refresh reloads the latest Employment News list, which is rebuilt automatically every day. Closed jobs are hidden automatically. The other job cards (Bank of India, BEML and so on) are updated only when you ask Claude to rebuild the page.</p>
+<a class="btn" href="https://employmentnews.gov.in/NewEmp/AllJobs.aspx?k=All" target="_blank" rel="noopener">Open live Employment News list</a>
+<a class="btn alt" href="https://employmentnews.gov.in/NewEmp/Home.aspx" target="_blank" rel="noopener">Employment News home</a></div>
+<p>B.Tech ECE (59.42%) · General category · DOB 17-Oct-1990 · Age today: <b id="age"></b></p>
+
+<div class="card"><h2>Official portals (register and apply here)</h2>
+<a class="btn" href="https://employmentnews.gov.in/NewEmp/Home.aspx" target="_blank" rel="noopener">Employment News</a>
+<a class="btn alt" href="https://ncs.gov.in/login/jobseeker" target="_blank" rel="noopener">NCS Job Seeker login</a>
+</div>
+
+<div class="card"><h2>Employment News: all listed jobs</h2>
+<p class="small">Read automatically from employmentnews.gov.in (AllJobs) every day. The site gives no age, branch or category details, so open each notice there to check eligibility.</p>
+<div id="enOpen"></div>
+<p class="small"><span id="enCount">0</span> notices on the site right now.</p>
+<button class="tbtn" id="enBtn" type="button">Show all listings (including closed)</button>
+<div id="enAll" style="display:none"></div>
+<a class="btn alt" href="https://employmentnews.gov.in/NewEmp/AllJobs.aspx?k=All" target="_blank" rel="noopener">See the live list on Employment News</a></div>
+
+<div class="card"><h2>Facilities and family travel</h2>
+<p class="small"><b>LTC (central government):</b> one hometown and one anywhere-in-India journey per 4-year block (2026–2029) for you and eligible family, after one year of service. <b>Railways:</b> privilege passes. <b>Public sector banks:</b> usually Leave Fare Concession every 2 years. <b>PSUs and ports:</b> staff guest houses and their own leave-travel schemes.</p>
+<p class="small">Circuit houses, inspection bungalows, forest and railway rest houses are mainly for official tours and are allotted by grade and availability. Family stay is usually at your own cost or with permission, so confirm the rule for each department.</p>
+<p class="small">Best fit for you: Mumbai Port, AIIMS Rishikesh, Oil India, NTPC, RITES, and Bank of India Scale III/IV if you have the experience.</p></div>
+
+<div class="card"><h2>Get new openings automatically</h2>
+<p class="small">This page hides closed jobs by itself, but new openings are added only when the list is refreshed. For automatic alerts straight to you:</p>
+<a class="btn alt" href="https://user.freejobalert.com/register" target="_blank" rel="noopener">Register for free job alerts (choose Engineering, Bank)</a>
+<a class="btn alt" href="https://ncs.gov.in/login/jobseeker" target="_blank" rel="noopener">NCS: log in, complete profile, turn on job alerts</a>
+<p class="small" style="margin-top:8px">To refresh this page, message Claude "update my job hub" and the same link is rebuilt with current openings.</p></div>
+
+<div class="card"><h2>Official apply pages (confirmed)</h2>
+<p class="small">Official sites open to their career sections; the exact form link appears there while a vacancy is open.</p>
+<a class="btn" href="https://www.bankofindia.bank.in/" target="_blank" rel="noopener">Bank of India: open site, click CAREER, then the "Officers upto Scale IV" notice (closes 5 Oct)</a>
+<a class="btn alt" href="https://www.gujaratmetrorail.com/" target="_blank" rel="noopener">GMRC: Careers section (closes 3 Oct)</a>
+<p class="small" style="margin-top:10px"><b>GMRC check:</b> Assistant Manager age cap is 35 (as on 19 Sep 2026) and needs 5–7 years of experience. At 35y 11m you are likely over the cap, so read the notice before spending the fee.</p>
+<p class="small">For every other job below, open its notice page: it carries the official "Apply Online" button and the PDF.</p></div>
+
+<div class="card"><h2>Documents to keep ready (scan each as PDF/JPG)</h2>
+<div class="job"><b>Identity and age</b><div class="small" style="color:var(--muted)">10th marksheet or certificate showing date of birth (17-Oct-1990), Aadhaar or other photo ID.</div></div>
+<div class="job"><b>Education</b><div class="small" style="color:var(--muted)">B.Tech degree or provisional certificate, all semester marksheets, and a percentage/aggregate certificate. Your 59.42% must be shown clearly if the post needs a minimum.</div></div>
+<div class="job"><b>Experience (needed for bank and senior posts)</b><div class="small" style="color:var(--muted)">Experience certificates on letterhead with joining date, post and duties; last salary slips; relieving letters. Certifications such as CISA/CISM/CISSP if the post asks.</div></div>
+<div class="job"><b>Photo and signature</b><div class="small" style="color:var(--muted)">Recent passport photo, signature in black ink. Bank of India also needs a left thumb impression, a handwritten declaration, and a live photo taken by webcam or phone during the form.</div></div>
+<div class="job"><b>Category and special certificates (if you claim them)</b><div class="small" style="color:var(--muted)">OBC non-creamy layer certificate issued on or after 1 Apr 2026; EWS income and asset certificate for FY 2025-26; SC/ST certificate; a No Objection Certificate if you work in a government department or PSU.</div></div>
+<div class="job"><b>Other</b><div class="small" style="color:var(--muted)">Working email and mobile number, and net banking or card for the fee (Bank of India: ₹1,180 for General/OBC/EWS). Match every name and date exactly to your certificates.</div></div></div>
+
+<div class="card"><h2>B.Tech / B.E. openings (permanent vs contract, checked 4 Oct 2026)</h2>
+<p class="small">Only posts that list B.Tech/B.E. as an accepted qualification are shown. Posts that are diploma-only, ITI, or need M.Tech/PhD are left out. Category: General, so no age relaxation is applied.</p>
+<p class="small">Sorted by last date; expired ones hide automatically. The Apply button opens the organisation's own careers page; exact form links change per notice and often need login, so I link the stable official page instead. Details came from listing sites. Open the official notification to confirm branch, age limit and percentage before applying.</p>
+<p class="small"><b>Category counts:</b> as General (UR) you can only compete for the Gen/UR seats. OBC, SC, ST and EWS seats are reserved. Counts come from listing sites reading each notice; confirm in the PDF.</p>
+<p class="small"><b>Job type key:</b> <b>Permanent</b> = regular post · <b>Contract</b> = fixed term, no pension · <b>Deputation only</b> = for serving government/port officers, not outside candidates. Checked against listing and notice pages on 4 Oct 2026.</p>
+<h2 style="margin-top:14px">Open to you (apply here)</h2>
+<div id="jobs"></div>
+<h2 style="margin-top:18px">Not open to you (listed so you can skip them)</h2>
+<div id="jobsNo"></div></div>
+
+<div class="card"><h2>Higher-paying government routes for ECE</h2>
+<div class="scroll"><table>
+<tr><th>Route</th><th>Pay (approx.)</th><th>Facilities</th><th>Usual age cap (General)</th></tr>
+<tr><td>IES (E&amp;T) via UPSC ESE</td><td>Level 10 start, ₹56,100 basic, rises quickly</td><td>Govt housing, CGHS, pension (NPS/UPS)</td><td>30 yrs</td></tr>
+<tr><td>ISRO / DRDO Scientist-Engineer</td><td>Level 10, ₹56,100 basic</td><td>Quarters, medical, LTC, subsidised canteen</td><td>28 yrs</td></tr>
+<tr><td>Navratna/Maharatna PSUs (BEL, BHEL, NTPC, PGCIL, ONGC etc.)</td><td>E2 scale ₹40,000–1,40,000 plus allowances; total often highest</td><td>Housing/HRA, medical, PRP bonus, PF, gratuity</td><td>26–28 yrs (often GATE-based)</td></tr>
+<tr><td>RRB JE (Signal/Telecom)</td><td>Level 6, ₹35,400 basic</td><td>Railway passes, quarters, medical</td><td>33 yrs</td></tr>
+<tr><td>SSC JE (Electrical/ECE posts)</td><td>Level 6, ₹35,400 basic</td><td>CGHS, HRA, pension</td><td>32 yrs</td></tr>
+<tr><td>Experienced posts (Executive Engineer, Deputy Chief Engineer, etc.)</td><td>Level 11–13, higher</td><td>Full central benefits</td><td>Often 35–50 yrs, needs experience</td></tr>
+</table></div>
+<p class="small" style="margin-top:10px"><b>Honest take:</b> at 36 (General category) most fresher-level top-paying posts are closed to you on age. OBC (+3), SC/ST (+5) or ex-serviceman relaxation can reopen some. Your best fit is usually experience-based engineer posts in ports, PSUs, AIIMS, IITs and state utilities, and the percentage rule (many want 60%) matters there too.</p></div>
+
+<div class="card"><h2>Bank jobs you can try at 35+</h2>
+<p class="small"><b>Closed to you by age:</b> IBPS/SBI PO and Clerk (about 20–30 yrs), IBPS SO and Scale I officer posts (up to 30). Regular bank exams are not an option unless you have category relaxation.</p>
+<div class="job"><b>Bank of India Specialist Officer (205 posts) — last date 5 Oct 2026</b>
+<span class="tag">Age counted on 1 Aug 2026: you were 35y 9m</span>
+<div class="small" style="color:var(--muted)">Scale II Manager: 25–35 yrs, 3 yrs experience, ₹64,820–93,960. Borderline for you; the notification's exact date-of-birth rule decides.<br>
+Scale III Senior Manager: 28–37 yrs, 5 yrs IT/BFSI experience, ₹85,920–1,05,280.<br>
+Scale IV Chief Manager: 28–40 yrs, 8 yrs experience, ₹1,02,300–1,20,940.<br>
+Posts are IT and specialist streams (Information Security, Data Engineering, Digital Platforms etc.); some need CISA/CISM/CISSP. Selected candidates pay a refundable security deposit (₹2–3 lakh for Scale II–IV). Fee ₹1,180 (General/OBC/EWS).
+<a href="https://bankofindia.bank.in/" target="_blank" rel="noopener">Bank of India careers</a></div></div>
+<p class="small" style="margin-top:8px">Other banks run similar experience-based specialist drives all year (for example Central Bank risk-management posts allow up to 45 for Scale IV). Watch for "Specialist Officer" notices from PSU banks.</p></div>
+
+<div class="card"><h2>Government jobs with higher age limits</h2>
+<p class="small">Typical pattern from past notifications; confirm the cap in each new notice.</p>
+<div class="scroll"><table>
+<tr><th>Type</th><th>Typical upper age</th><th>Fit for you</th></tr>
+<tr><td>Experience-based engineer posts (ports, AIIMS, IITs, PSUs, state power utilities)</td><td>35–50</td><td>Best fit if you have work experience</td></tr>
+<tr><td>Deputation / contract / lateral posts (technical officer, consultant)</td><td>40–56</td><td>Needs service or industry experience</td></tr>
+<tr><td>Bank specialist officers (Scale II–IV)</td><td>35–42</td><td>Fit if you have IT/BFSI experience</td></tr>
+<tr><td>Teaching posts such as KVS/NVS PGT, polytechnic lecturer</td><td>35–40</td><td>Check subject and degree rules</td></tr>
+<tr><td>Project Engineer / Scientist (contract) in labs and institutes</td><td>35–40</td><td>Often prefers M.Tech or GATE</td></tr>
+</table></div>
+<p class="small" style="margin-top:8px">The extra years you get from category relaxation (OBC +3, SC/ST +5, ex-servicemen, PwBD) apply on top of these.</p></div>
+
+<div class="card"><h2>Check age on a closing date</h2>
+<input type="date" id="d"><p id="res" style="margin-top:8px;font-weight:600;color:inherit"></p></div>
+</main>
+<script>
+var dob=new Date(1990,9,17);
+function age(o){var y=o.getFullYear()-dob.getFullYear(),m=o.getMonth()-dob.getMonth(),d=o.getDate()-dob.getDate();if(d<0){m--;d+=new Date(o.getFullYear(),o.getMonth(),0).getDate()}if(m<0){y--;m+=12}return y+"y "+m+"m "+d+"d"}
+document.getElementById("age").textContent=age(new Date());
+document.getElementById("d").onchange=function(e){var p=e.target.value.split("-");document.getElementById("res").textContent=p[0]?"Age on that date: "+age(new Date(+p[0],+p[1]-1,+p[2])):""};
+var L="https://www.freejobalert.com/engineering-jobs/";
+var jobs=[
+[
+"Bank of India",
+"Specialist Officer, Scale II–IV (205)",
+"2026-10-05",
+"P",
+1,
+"Check age rule: Scale III cap 37, Scale IV cap 40 with 5–8 yrs IT/BFSI experience. Refundable deposit applies. Last date was extended to 5 Oct, so it closes tomorrow.",
+"https://www.bankofindia.bank.in/",
+"https://bankofindia.bank.in/",
+"Gen 92 · OBC 52 · SC 29 · ST 15 · EWS 17 (total 205)"
+],
+[
+"NIELIT",
+"Senior Hardware Engineer and others",
+"2026-10-05",
+"C",
+1,
+"1-year contract, consolidated pay. Hardware post suits ECE.",
+"https://www.nielit.gov.in/recruitments",
+"https://www.freejobalert.com/articles/nielit-recruitment-2026-apply-online-for-senior-hardware-engineer-senior-programmer-and-more-posts-3069136",
+"Not printed by category: contract posts, no reservation shown in the notice I could read"
+],
+[
+"BEML",
+"AGM (Project/Contract Mgmt) and others (13)",
+"2026-10-07",
+"P",
+1,
+"Only the AGM post (cap 42, 13 yrs experience) can fit your age. Engineer and Asst Manager caps are 29 and 30.",
+"https://www.bemlindia.in",
+"https://www.freejobalert.com/articles/beml-executive-recruitment-2026-apply-online-for-13-assistant-manager-engineer-and-more-posts-3069400",
+"Gen/UR 10 · OBC 2 · SC 0 · ST 1 · EWS 0 (total 13, across all 10 post codes)"
+],
+[
+"RITES",
+"DGM / Manager / Asst Manager (33)",
+"2026-10-08",
+"P",
+0,
+"All 33 posts are Civil, bridge, tunnel, survey, structural or geophysics roles; none are ECE. Skip.",
+"https://rites.com/Career",
+"https://www.freejobalert.com/articles/rites-engineering-professionals-recruitment-2026-apply-online-for-33-manager-assistant-manager-dgm-posts-3067749",
+"Gen/UR 18 · OBC 4 · SC 3 · ST 2 · EWS 2 (total 29 in the Manager/Asst Manager list; 4 DGM posts are UR). Some listing totals differ, check the notice"
+],
+[
+"FACT",
+"Engineer",
+"2026-10-14",
+"C?",
+1,
+"Earlier FACT engineer notices were Chemical-only and contract. I could not open this exact notice, so confirm branch and type.",
+"https://fact.co.in",
+"https://www.freejobalert.com/articles/fact-engineer-recruitment-2026-apply-online-3070747",
+"Not found: I could not open this notice's vacancy table"
+],
+[
+"TGPSC (Telangana)",
+"Manager, Engineering, HMWSSB (130)",
+"2026-10-17",
+"P",
+1,
+"State board, age up to 44. Only about 5% of posts (CSE/IT/ECE) suit ECE, and only 3 posts are open to non-Telangana candidates. Exam planned Dec 2026.",
+"https://tgpsc.gov.in",
+"https://www.freejobalert.com/articles/tgpsc-manager-recruitment-2026-apply-online-for-130-posts-3068341",
+"OC 40 (3 unreserved + 37 local) · EWS 13 · ST 13 · BC at least 27 (B 12, C 2, D 8, E 5) · SC at least 8; the listing I read did not show every row (130 total)"
+],
+[
+"NCRTC",
+"Assistant Manager, Operations (2)",
+"2026-10-23",
+"P",
+1,
+"Best fit: direct recruitment, age cap 40, 5 yrs in electronics/SCADA/rail systems, pay ₹50,000–1,60,000.",
+"https://www.ncrtc.in",
+"https://www.freejobalert.com/articles/ncrtc-assistant-manage-recruitment-2026-apply-online-3069733",
+"Gen/UR 2 · OBC 0 · SC 0 · ST 0 · EWS 0 (total 2)"
+],
+[
+"Chennai Port Authority",
+"Superintending Engineer, Civil (2)",
+"2026-10-07",
+"D",
+0,
+"Only serving Port Authority officers, applying through their employer.",
+"https://www.chennaiport.gov.in",
+"https://www.freejobalert.com/articles/chennai-port-authority-superintending-engineer-recruitment-2026-apply-offline-3064751",
+"Not applicable: deputation"
+],
+[
+"Oil India",
+"Deputy Chief Engineer, Reservoir and others (3)",
+"2026-10-10",
+"P",
+0,
+"Needs Petroleum Engineering / Chemistry / Economics with 9+ yrs. Not an ECE fit.",
+"https://www.oil-india.com/advertisement-list",
+"https://www.freejobalert.com/articles/oil-india-recruitment-2026-apply-online-for-deputy-chief-engineer-economist-and-more-posts-3067409",
+"Gen/UR 2 · OBC 1 · SC 0 · ST 0 (total 3: Chemist OBC-NCL, Reservoir UR, Economist UR)"
+],
+[
+"NTPC",
+"Engineer, Assistant Officer and more (19)",
+"2026-10-13",
+"P",
+0,
+"Special drive for SC/ST backlog vacancies only. Not open to General.",
+"https://careers.ntpc.co.in",
+"https://www.freejobalert.com/articles/ntpc-recruitment-2026-apply-online-for-13-deputy-manager-assistant-manager-assistant-officer-posts-3070053",
+"Gen 0 · OBC 0 · SC and ST only: SC 8 · ST 10 · 1 more SC/ST post whose split I could not read (total 19)"
+],
+[
+"Mumbai Port Authority",
+"Deputy Chief Engineer, Civil (3)",
+"2026-10-21",
+"D",
+0,
+"Filled by absorption/deputation of serving port officers. Not open-market.",
+"http://www.mumbaiport.gov.in/",
+"https://www.freejobalert.com/articles/mumbai-port-authority-deputy-chief-engineer-recruitment-2026-apply-online-3068876",
+"Not applicable: deputation"
+],
+[
+"AIIMS Rishikesh",
+"Executive Engineer (Civil), CSSD Officer (2)",
+"2026-10-26",
+"D",
+0,
+"Only serving government officers applying through their employer.",
+"https://aiimsrishikesh.edu.in",
+"https://www.freejobalert.com/articles/aiims-rishikesh-recruitment-2026-apply-offline-for-executive-engineer-cssd-officer-posts-3069601",
+"Not applicable: deputation (1 post each)"
+],
+[
+"Mumbai Port Authority",
+"AEE, Executive Engineer and more (25)",
+"2026-10-28",
+"P",
+0,
+"Mostly Civil. The one Telecom/Electronics Executive Engineer post needs a PG degree/diploma and age cap 35, which you will have passed.",
+"http://www.mumbaiport.gov.in/",
+"https://www.freejobalert.com/articles/mumbai-port-authority-class-i-and-class-ii-recruitment-2026-notification-out-apply-online-for-25-aee-executive-engineer-and-more-posts-3070047",
+"Of the 20 posts I could read: UR 15 · OBC 2 · SC 1 · ST 1 · PwBD 1; the other 5 posts' split was not shown (total 25)"
+]
+];
+var T={P:["Permanent","#15803d"],C:["Contract","#b45309"],"C?":["Contract (likely)","#b45309"],D:["Deputation only","#7c3aed"]};
+var now=new Date();now.setHours(0,0,0,0);var h=["",""];
+jobs.slice().sort(function(a,b){return a[2]<b[2]?-1:1}).forEach(function(j){var p=j[2].split("-"),dt=new Date(+p[0],+p[1]-1,+p[2]),n=Math.round((dt-now)/864e5);if(n<0)return;var t=T[j[3]];
+h[j[4]?0:1]+='<div class="job"><b>'+j[0]+' — '+j[1]+'</b><span class="tag" style="color:#fff;background:'+t[1]+';border-color:'+t[1]+'">'+t[0]+'</span><span class="tag">Last date '+p[2]+'-'+p[1]+'-'+p[0]+'</span><span class="days">'+n+' days left</span><div class="small" style="color:var(--muted)">'+j[5]+'</div><div class="small" style="margin-top:6px;padding:8px;border:1px dashed var(--line);border-radius:8px"><b>Vacancies by category:</b> '+j[8]+'</div>'+(j[4]?'<a class="btn" href="'+j[6]+'" target="_blank" rel="noopener">Apply on official site</a>':'')+'<div class="small" style="margin-top:6px"><a href="'+j[7]+'" target="_blank" rel="noopener">Notice details</a>'+(j[4]?'':' · <a href="'+j[6]+'" target="_blank" rel="noopener">Official site</a>')+'</div></div>'});
+document.getElementById("jobs").innerHTML=h[0]||"<p>No open items left in this snapshot.</p>";
+document.getElementById("jobsNo").innerHTML=h[1]||"<p>None.</p>";
+
+var EN=[["MINERAL EXPLORATION AND CONSULTANCY LIMITED", "ACCOUNTANT & OTHERS", "Recruitment", "2026-10-11"], ["NATIONAL DISASTER MANAGEMENT AUTHORITY", "YOUNG CONSULTANT (FOREST FIRE RISK MANAGEMENT)", "Deputation", "2026-10-18"], ["NATIONAL BOARD OF EXAMINATIONS IN MEDICAL SCIENCES", "EXECUTIVE DIRECTOR", "Recruitment", "2026-10-30"], ["RAMAGUNDAM FERTILIZERS AND CHEMICALS LIMITED", "ENGINEER & OTHERS", "Recruitment", "2026-09-24"], ["DNS REGIONAL INSTITUTE OF COOPERATIVE MANAGEMENT", "LECTURER", "Recruitment", "2026-09-27"], ["NALANDA UNIVERSITY", "TEACHING POSITIONS", "Recruitment", "2026-09-15"], ["NATIONAL INSTITUTE OF PHARMACEUTICAL EDUCATION AND RESEARCH KOLKATA", "PROFESSOR", "Recruitment", "2026-09-17"], ["INDO-RUSSIAN RIFLES PVT LTD", "CHIEF EXECUTIVE OFFICER/ MANAGING DIRECTOR", "Recruitment", "2026-09-11"], ["SAINIK SCHOOL AMBIKAPUR", "LABORATORY ASSISTANT (BIOLOGY) & OTHERS", "Contractual", "2026-09-12"], ["BRIC-NATIONAL INSTITUTE OF ANIMAL BIOTECHNOLOGY", "SCIENTIST-B & OTHERS", "Recruitment", "2026-09-11"], ["ANDAMAN AND NICOBAR ADMINISTRATION SECRETARIAT", "SUPERINTENDING ENGINEER (CIVIL)", "Recruitment", "2026-09-02"], ["LBSNAA, D/O PERSONNEL & TRAINING", "ADMINISTRATIVE OFFICER & OTHERS", "Recruitment", "2026-09-11"]];
+var ENUPD="4 Oct 2026 (built in)";
+function enRow(e){var p=e[3].split("-"),n=Math.round((new Date(+p[0],+p[1]-1,+p[2])-now)/864e5),o=n>=0;
+return '<div class="job"><b>'+e[0]+' — '+e[1]+'</b><span class="tag">'+e[2]+'</span><span class="tag">Last date '+p[2]+'-'+p[1]+'-'+p[0]+'</span><span class="'+(o?'open':'closed')+'">'+(o?'Open, '+n+' days left':'Closed')+'</span></div>'}
+function renderEN(){
+var enO=EN.filter(function(e){var p=e[3].split("-");return new Date(+p[0],+p[1]-1,+p[2])>=now});
+document.getElementById("enOpen").innerHTML=enO.length?enO.map(enRow).join(""):"<p class='small'>No listed notice is still open.</p>";
+document.getElementById("enAll").innerHTML=EN.map(enRow).join("");
+document.getElementById("enCount").textContent=EN.length;
+document.getElementById("enUpd").textContent=ENUPD;
+document.getElementById("enBtn").textContent=document.getElementById("enAll").style.display==="none"?"Show all "+EN.length+" listings (including closed)":"Hide closed listings";}
+function loadEN(btn){
+if(btn)btn.textContent="Refreshing...";
+return fetch("en.json?t="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
+if(d&&d.jobs&&d.jobs.length){EN=d.jobs;ENUPD=d.updated}renderEN();if(btn)btn.innerHTML="&#8635; Refresh"}).catch(function(){renderEN();if(btn)btn.innerHTML="&#8635; Refresh"})}
+renderEN();loadEN();
+document.getElementById("enBtn").onclick=function(){var a=document.getElementById("enAll");a.style.display=a.style.display==="none"?"block":"none";renderEN()};
+document.getElementById("rbtn").onclick=function(){loadEN(this);document.getElementById("rpanel").classList.add("on")};
+</script></body></html>
